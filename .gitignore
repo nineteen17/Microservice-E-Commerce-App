@@ -32,3 +32,51 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log
+.yarn-integrity
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+/.docker
+
+# Kubernetes
+*.kubeconfig
+*.k8s
+
+# Helm
+*.helm
+*.tgz
+
+# Terraform
+*.tfstate
+*.tfstate.*.backup
+*.tfvars
+.terraform/
+
+# Editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
