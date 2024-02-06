@@ -30,5 +30,8 @@ app.use(express.json())
 
 // Routes
 
+app.get('/', (req, res) => {
+  res.status(200).send('Hello from the product service again')
+})
 
 export default app

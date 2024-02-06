@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "test": "jest --runInBand",
-    "build": "tsc",
+    "build": "npx tsc",
     "build:watch": "tsc --watch",
     "start": "node build/server.js"
   },
