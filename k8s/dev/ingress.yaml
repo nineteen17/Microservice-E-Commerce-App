@@ -2,18 +2,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-svc
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2  # This line adds the rewrite rule
 spec:
+  ingressClassName: nginx
   rules:
-  - http:
+  - host: app.dev
+    http:
       paths:
-      - path: /user-service/?(.*)
+      - path: /user-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: user-service-svc
             port:
               number: 4000
-      - path: /product-service/?(.*)
+      - path: /product-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:

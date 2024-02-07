@@ -3,8 +3,6 @@ kind: Config
 metadata:
   name: microservice-e-commerce-app
 build:
-  local:
-      push: false
   artifacts:
     - image: nineteen17dh/product-service
       context: app/product-service
