@@ -29,7 +29,7 @@ app.use(
 app.use(express.json())
 
 // Routes
-app.get('/', (req, res) => {
+app.get('/user-service/', (req, res) => {
   res.status(200).send('Hello from the user service')
 })
 
