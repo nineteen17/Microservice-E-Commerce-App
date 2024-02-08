@@ -30,7 +30,7 @@ app.use(express.json())
 
 // Routes
 
-app.get('/product-service/', (req, res) => {
+app.get('/product-service', (req, res) => {
   res.status(200).send('Hello from the product service again')
 })
 
