@@ -10,7 +10,7 @@ const app = express()
 app.use(cookieParser());
 // Middleware
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['https://nineteen17dns.com'];
 
 app.use(
   cors({
@@ -33,5 +33,14 @@ app.use(express.json())
 app.get('/product-service/', (req, res) => {
   res.status(200).send('Hello from the product service again')
 })
+
+app.get('/product-service/test', (req, res) => {
+  res.status(200).send("Test Successful");
+});
+
+app.get('/product-service/:id', (req, res) => {
+  const productId = req.params.id;
+  res.status(200).json({ productService: { id: productId, name: 'Test Product', description: 'This is a test product.' } });
+});
 
 export default app
