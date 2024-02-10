@@ -16,5 +16,12 @@ router.post('/user-service/test-message', async (req, res) => {
     res.status(500).json({ error: `Error in publishing message: ${errorMessage(err)}`});
   }
 });
+router.get('/user-service/test-message', (req, res) => {
+  res.status(200).send('Hello from the user service')
+})
 
+router.post('/user-service/local', (req, res) => {
+  const payload = req.body
+  res.send(payload)
+})
 export { router };

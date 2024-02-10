@@ -6,10 +6,6 @@ import { subscribeToMessages } from './rabbitmq/subscribe';
 const startServer = async () => {
     env.config();
 
-    if (!process.env.DATABASE_URI) {
-        console.error('Missing mandatory environment variable: DATABASE_URI');
-        process.exit(1);
-    }
 
     await connectDB();
     await subscribeToMessages('user-exchange', 'user-message', 'user-queue');
