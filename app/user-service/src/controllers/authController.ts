@@ -1,4 +1,4 @@
-import { IResponseHandler } from '../types';
+import { Request, Response } from 'express';
 import { UserModel }from '../models/user';
 import UserTokenModel from '../models/userToken';
 import generateTokens from '../utils/generateTokens';
@@ -6,7 +6,7 @@ import verifyRefreshToken from '../utils/verifyRefreshToken';
 import bcrypt from 'bcryptjs';
 import { errorMessage } from '../utils/errorMessage';
 
-export const registerController = async ({req, res}: IResponseHandler) => {
+export const registerController = async (req: Request, res: Response) => {
     try {
         const { email, password, firstName, lastName } = req.body;
 
@@ -37,7 +37,7 @@ export const registerController = async ({req, res}: IResponseHandler) => {
 };
 
 
-export const loginController = async ({req, res}: IResponseHandler) => {
+export const loginController = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
@@ -65,7 +65,7 @@ export const loginController = async ({req, res}: IResponseHandler) => {
 };
 
 
-export const logoutController = async ({req, res}: IResponseHandler) => {
+export const logoutController = async (req: Request, res: Response) => {
     try {
         const { refreshToken } = req.body;
 
@@ -82,7 +82,7 @@ export const logoutController = async ({req, res}: IResponseHandler) => {
 };
 
 
-export const refreshTokenController = async ({ req, res }: IResponseHandler) => {
+export const refreshTokenController = async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
 
     try {
