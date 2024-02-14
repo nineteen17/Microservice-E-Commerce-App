@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-import { IMiddlewareHandler } from "../types";
-
+import { Request, Response, NextFunction } from "express";
 
 declare global {
     namespace Express {
@@ -10,7 +9,7 @@ declare global {
     }
   }
 
-const authMiddleware = async ({req, res, next}: IMiddlewareHandler) => {
+const authMiddleware = async (req: Request, res:Response, next: NextFunction) => {
 	const token = req.header("x-access-token");
 	if (!token)
 		return res

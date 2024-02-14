@@ -1,11 +1,8 @@
 import express from 'express'
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv'
 import testRouter  from './routes/testRoutes';
 import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes';
-
-dotenv.config()
 
 const app = express()
 app.use(cookieParser());
@@ -20,5 +17,5 @@ app.get('/user-service/', (req, res) => {
 })
 app.use(testRouter)
 app.use('/user-service/',userRouter)
-app.use('user-service/', authRouter)
+app.use('/user-service/', authRouter)
 export default app
