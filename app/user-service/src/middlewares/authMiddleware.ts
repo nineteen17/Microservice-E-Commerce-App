@@ -1,15 +1,16 @@
 import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
+import { IMiddlewareHandler } from "../types";
+
 
 declare global {
     namespace Express {
       interface Request {
-        user?: jwt.JwtPayload | string; // Adjust according to your token payload
+        user?: jwt.JwtPayload | string; 
       }
     }
   }
 
-const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = async ({req, res, next}: IMiddlewareHandler) => {
 	const token = req.header("x-access-token");
 	if (!token)
 		return res

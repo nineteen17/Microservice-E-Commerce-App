@@ -4,7 +4,6 @@ export interface IUser {
   _id?: mongoose.Schema.Types.ObjectId;
   email: string;
   password: string;
-  googleId?: string;
   firstName: string;
   lastName: string;
   phoneNumber?: string;
@@ -14,21 +13,15 @@ export interface IUser {
   }>;
 }
 
-
 const userSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,
+    required: true, 
     unique: true,
-    sparse: true,    // Allows for null values in case of OAuth sign-ups without an email
   },
   password: {
     type: String,
-    required: function() { return !this.googleId; },  // Required if no googleId present
-  },
-  googleId: {
-    type: String,
-    unique: true,
-    sparse: true,   // Allows for null values in case of traditional email sign-ups
+    required: true, // Always required, since Google sign-in is removed
   },
   firstName: String,
   lastName: String,

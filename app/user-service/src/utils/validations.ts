@@ -1,13 +1,23 @@
 import { z } from 'zod';
 
-export const UserRegistrationSchema = z.object({
+export const RegisterSchema = z.object({
     email: z.string().email({ message: "Invalid email format" }),
     password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
     firstName: z.string().min(1, { message: "First name is required" }),
     lastName: z.string().min(1, { message: "Last name is required" }),
   });
   
+export const LoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6)
+})
 
+export const RefreshTokenShema = z.object({
+  userId: z.string().min(1, "User ID is required"),
+  token: z.string().min(1, "Refresh token is required"),
+}) 
+
+  // OTHER
   const envVariables = z.object({
     USER_MONGO_URI: z.string(),
     ACCESS_TOKEN_PRIVATE_KEY: z.string(),
