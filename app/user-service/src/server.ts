@@ -1,8 +1,8 @@
 import env from 'dotenv'
+env.config()
 import app from "./app"
 import connectDB from './db'
 
-env.config()
 connectDB()
 
 const PORT = 4000

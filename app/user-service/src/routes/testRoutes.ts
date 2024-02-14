@@ -1,6 +1,6 @@
 import express from 'express';
 import { publishMessage } from '../rabbitmq/rabbitmq'; 
-import { errorMessage } from '../utils/utils'
+import { errorMessage } from '../utils/errorMessage'
 const router = express.Router();
 
 // Route to handle publishing a message
@@ -24,4 +24,4 @@ router.post('/user-service/local', (req, res) => {
   const payload = req.body
   res.send(payload)
 })
-export { router };
+export default router;
