@@ -1,14 +1,15 @@
-import amqplib, { Channel, Connection, ConsumeMessage } from 'amqplib';
-
-const amqpUrl: string = 'amqp://rabbitmq:5672';
+import { Channel, ConsumeMessage } from 'amqplib';
+import { getConnection } from './connection';
 
 const processMessage = (msg: ConsumeMessage) => {
     console.log("Received message:", msg.content.toString());
-    // Process the message here
+    const messageContent = JSON.parse(msg.content.toString());
+    const userId = messageContent.userId;
+       console.log(`Received userId: ${userId}`);
 };
 
 export const subscribeToMessages = async (exchange: string, routingKey: string, queueName: string): Promise<void> => {
-    const connection: Connection = await amqplib.connect(amqpUrl);
+    const connection = await getConnection();
     const channel: Channel = await connection.createChannel();
 
     await channel.assertExchange(exchange, 'topic', { durable: false });
