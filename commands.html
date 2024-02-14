@@ -1,0 +1,8 @@
+kubectl
+kubectl describe pod/<POD_NAME>
+
+
+
+<!-- Clean Up Old Cached Docker Images and forces Skaffold to Build and Deploy a new Docker Image -->
+skaffold build --cache-artifacts=false
+skaffold dev --no-prune=false --cache-artifacts=false
