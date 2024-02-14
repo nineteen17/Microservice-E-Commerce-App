@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
-import { IUser } from "./user";
-
 const Schema = mongoose.Schema;
 
 export interface IUserToken {
-    userId: IUser._id,
-    token: string,
-    createdAt: Date,
+    userId: mongoose.Schema.Types.ObjectId;
+    token: string;
+    createdAt?: Date;
 }
+
 const userTokenSchema = new Schema({
 	userId: {
 		type: Schema.Types.ObjectId,
@@ -18,12 +17,11 @@ const userTokenSchema = new Schema({
 		required: true,
 	},
 	createdAt: {
-		type: Date,
-		default: Date.now,
+		timestamps: true,
 		expires: 30 * 86400, // 30 days
 	},
-});
+}); 
 
-const UserToken = mongoose.model("UserToken", userTokenSchema);
+const UserTokenModel = mongoose.model("UserToken", userTokenSchema);
 
-export default UserToken;
+export default UserTokenModel;
