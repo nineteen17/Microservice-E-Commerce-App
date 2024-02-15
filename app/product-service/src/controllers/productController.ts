@@ -12,34 +12,45 @@ export const createProduct = async (req: Request, res: Response) => {
 }
 
 export const getProducts = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const query: any = {};
-  
-      // Handle string fields with case-insensitive partial matching
-      const stringFields = ['name', 'brand', 'type'];
-      stringFields.forEach(field => {
-        const fieldValue = req.query[field];
-        if (typeof fieldValue === 'string') { // Ensure fieldValue is strictly a string
-          query[field] = new RegExp(fieldValue, 'i');
-        }
-      });
-  
-      // Handle numeric fields, assuming direct matching (extend as needed for ranges)
-      const numericFields = ['volume', 'price', 'alcoholContent'];
-      numericFields.forEach(field => {
-        const fieldValue = req.query[field];
-        if (typeof fieldValue === 'string') { // Check if fieldValue is a string and convert to number
-          query[field] = Number(fieldValue);
-        }
-      });
+  try {
+    const query = ProductModel.find();
 
-      const products = await ProductModel.find(query);
-      res.json(products);
+    // Handle string fields with case-insensitive partial matching
+    const stringFields = ['name', 'brand', 'type'];
+    stringFields.forEach(field => {
+      const fieldValue = req.query[field];
+      if (typeof fieldValue === 'string') {
+        query.where(field).regex(new RegExp(fieldValue, 'i'));
+      }
+    });
 
-    } catch (error) {
-      res.status(500).send({ message: error});
+    // Handle numeric fields for direct matching
+    const numericFields = ['volume', 'price', 'alcoholContent'];
+    numericFields.forEach(field => {
+      const fieldValue = req.query[field];
+      if (typeof fieldValue === 'string') {
+        const numericValue = Number(fieldValue);
+        if (!isNaN(numericValue)) {
+          query.where(field).equals(numericValue);
+        }
+      }
+    });
+
+    // Sorting
+    const sortParam = req.query.sort as string | undefined;
+    if (sortParam) {
+      const sortDirection = sortParam.startsWith('-') ? 'desc' : 'asc'; // Use 'desc' for descending
+      const fieldName = sortParam.startsWith('-') ? sortParam.substring(1) : sortParam;
+      query.sort({ [fieldName]: sortDirection });
     }
-  };
+
+    const products = await query.exec();
+    res.json(products);
+  } catch (error) {
+    res.status(500).send({ message: error});
+  }
+};
+
 export const getProductById = async (req: Request, res: Response): Promise<void> => {
     try {
       const product = await ProductModel.findById(req.params.id);
