@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/user';
 import { ProductModel } from '../models/product';
 import bcrypt from 'bcryptjs';
+import { errorMessage } from '../utils/errorMessage';
 
 export const getUserProfile = async (req: any, res: Response) => {
     
@@ -18,7 +19,7 @@ export const getUserProfile = async (req: any, res: Response) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                washlist: user.watchlist,
+                watchlist: user.watchlist,
             }).status(200)
         } else {
             res.status(404);
@@ -80,24 +81,60 @@ export const addWatchlistProduct = async (req: any, res: Response) => {
     try {
         const { productId } = req.params;
         const user = await UserModel.findById(req.user._id);
-        const localProduct = await ProductModel.findById(productId);
+        const product = await ProductModel.findById(productId);
 
-        if (localProduct) {
-            user?.watchlist?.includes(productId)
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
         }
-        // item doesnt exist in local user db
+
+        if (user) {
+            if (user.watchlist && !user.watchlist.includes(productId)) {
+                user.watchlist.push(productId);
+                await user.save();
+                res.status(200).json({ message: "Product added to watchlist" });
+            } else {
+                res.status(400).json({ message: "Product already in watchlist" });
+            }
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Error adding to watchlist", error: err });
     }
 };
 
-export const deletWatchlistProduct = async (res: Response, req: Request) => {
 
+export const deleteWatchlistProduct = async (req: any, res: Response) => {
     try {
-        console.log("delete");
-        
-    } catch (err) {
-        res.status(500).json({ message: "Error deleting product to==in watchlist", error: err });
+        const { productId } = req.params;
+        const userId = req.user._id;
+
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Ensure watchlist is initialized if it's undefined
+        user.watchlist = user.watchlist || [];
+        console.log("user.watclist:", user.watchlist);
+
+        // Find the index of the product in the watchlist
+        const productIndex = user.watchlist.findIndex(item => item._id?.toString() === productId);
+
+        // Check if the product was found in the watchlist
+        if (productIndex === -1) {
+            return res.status(404).json({ message: "Product not found in watchlist" });
+        }
+
+        // Remove the product from the watchlist
+        user.watchlist.splice(productIndex, 1);
+        user.markModified('watchlist');
+        await user.save();
+
+        res.status(200).json({ message: "Product removed from watchlist" });
+    } catch (error) {
+        console.error("Delete Watchlist Product Error:", error);
+        res.status(500).json({ message: "Error removing product from watchlist", error: errorMessage(error)});
     }
-}
+};

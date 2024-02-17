@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { IProduct } from './product';
 
 export interface IUser {
   _id?: mongoose.Schema.Types.ObjectId;
@@ -7,10 +8,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   phoneNumber?: string;
-  watchlist?: Array<{
-    productId: mongoose.Schema.Types.ObjectId;
-    addedAt: Date;
-  }>;
+  watchlist?: IProduct[];
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -26,10 +24,7 @@ const userSchema = new mongoose.Schema<IUser>({
   firstName: String,
   lastName: String,
   phoneNumber: String,
-  watchlist: [{
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    addedAt: { type: Date, default: Date.now },
-  }],
+  watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 }, { timestamps: true });
 
 export const UserModel = mongoose.model<IUser>('User', userSchema);

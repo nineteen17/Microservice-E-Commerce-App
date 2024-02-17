@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IProduct {
+export interface IProduct {
     _id: mongoose.Schema.Types.ObjectId;
     name: string;
     price: number;
