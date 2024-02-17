@@ -1,11 +1,23 @@
 import { Request, Response } from "express";
 import { ProductModel } from "../models/product";
+import { publishMessage } from "../rabbitmq/publish";
 
 export const createProduct = async (req: Request, res: Response) => {
+
     try {
         const newProduct = new ProductModel(req.body);
         await newProduct.save();
+
+        const createProductPayload = {
+          _id: newProduct._id,
+          name: newProduct.name,
+          price: newProduct.price,
+          imageUrl: newProduct.imageUrl,
+          stockLevel: newProduct.stockLevel
+        }
         res.status(201).send(newProduct);
+        await publishMessage('product-exchange', 'product.created', createProductPayload);
+        
       } catch (error) {
         res.status(400).send(error);
       }
@@ -71,7 +83,15 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
         res.status(404).send('Product not found');
         return;
       }
-      res.send(product);
+      const updateProductPayload = {
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        stockLevel: product.stockLevel
+      }
+      await publishMessage('product-exchange', 'product.updated', updateProductPayload);
+      res.send(product).status(200);
     } catch (error) {
       res.status(400).send(error);
     }
