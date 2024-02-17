@@ -4,7 +4,7 @@ const amqpUrl: string = 'amqp://rabbitmq:5672'
 ; 
 
 // Separate function to handle RabbitMQ connection
-const connectToRabbitMQ = async (): Promise<{ connection: Connection; channel: Channel }> => {
+export const connectToRabbitMQ = async (): Promise<{ connection: Connection; channel: Channel }> => {
   const connection: Connection = await amqplib.connect(amqpUrl);
   const channel: Channel = await connection.createChannel();
   return { connection, channel };
@@ -18,7 +18,7 @@ export const publishMessage = async (exchange: string, routingKey: string, messa
     ({ connection, channel } = await connectToRabbitMQ());
     console.log('RabbitMQ Connected and Channel Created');
 
-    await channel.assertExchange(exchange, 'topic', { durable: false });
+    await channel.assertExchange(exchange, 'topic', { durable: true });
     console.log('Exchange Asserted');
 
     channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(messagePayload)));
@@ -32,3 +32,4 @@ export const publishMessage = async (exchange: string, routingKey: string, messa
     if (connection) await connection.close();
   }
 };
+

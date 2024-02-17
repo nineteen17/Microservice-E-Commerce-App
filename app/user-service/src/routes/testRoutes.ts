@@ -1,5 +1,5 @@
 import express from 'express';
-import { publishMessage } from '../rabbitmq/rabbitmq'; 
+import { publishMessage } from '../rabbitmq/publish'; 
 import { errorMessage } from '../utils/errorMessage'
 const router = express.Router();
 
