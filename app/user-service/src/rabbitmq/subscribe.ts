@@ -1,6 +1,8 @@
 import { ConsumeMessage } from 'amqplib';
 import { connectToRabbitMQ } from './connection';
 import { ProductModel } from '../models/product';
+import { UserModel } from '../models/user';
+import mongoose from 'mongoose';
 
 const processMessage = async (msg: ConsumeMessage, routingKey: string) => {
     console.log("Received message:", msg.content.toString());
@@ -26,6 +28,24 @@ const processMessage = async (msg: ConsumeMessage, routingKey: string) => {
                     console.log(`Product updated: ${updatedProduct}`);
                 } else {
                     console.log('Product not found for update');
+                }
+                break;
+
+            case 'product.deleted':
+                const productId = messageContent; // Assuming this is already the correct ObjectId format
+                const deleteProduct = await ProductModel.findByIdAndDelete(productId);
+            
+                if (deleteProduct) {
+                    console.log(`Product deleted: ${deleteProduct}`);
+
+                    const objectId = new mongoose.Types.ObjectId(productId);
+                    await UserModel.updateMany(
+                        { "watchlist": objectId },
+                        { $pull: { "watchlist": objectId } }
+                    );
+                    console.log(`Product ${productId} removed from all user watchlists`);
+                } else {
+                    console.log('Product could not be deleted');
                 }
                 break;
 

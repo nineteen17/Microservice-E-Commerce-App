@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface IProduct {
     _id: mongoose.Schema.Types.ObjectId;
     name: string;
+    brand: string;
     price: number;
     imageUrl: string;
     stockLevel: number;
@@ -14,6 +15,11 @@ const productSchema = new mongoose.Schema<IProduct>({
         required: true
     },
     name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    brand: {
         type: String,
         required: true,
         trim: true

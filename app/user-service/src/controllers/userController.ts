@@ -100,7 +100,7 @@ export const addWatchlistProduct = async (req: any, res: Response) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Error adding to watchlist", error: err });
+        res.status(500).json({ message: "Error adding to watchlist", error: errorMessage(err) });
     }
 };
 

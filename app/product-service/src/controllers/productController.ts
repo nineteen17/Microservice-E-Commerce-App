@@ -11,6 +11,7 @@ export const createProduct = async (req: Request, res: Response) => {
         const createProductPayload = {
           _id: newProduct._id,
           name: newProduct.name,
+          brand: newProduct.brand,
           price: newProduct.price,
           imageUrl: newProduct.imageUrl,
           stockLevel: newProduct.stockLevel
@@ -86,6 +87,7 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
       const updateProductPayload = {
         _id: product._id,
         name: product.name,
+        brand: product.brand,
         price: product.price,
         imageUrl: product.imageUrl,
         stockLevel: product.stockLevel
@@ -104,6 +106,7 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
         res.status(404).send('Product not found');
         return;
       }
+      await publishMessage('product-exchange', 'product.deleted', req.params.id)
       res.send(product);
     } catch (error) {
       res.status(500).send(error);
