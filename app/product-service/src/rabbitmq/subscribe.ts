@@ -1,5 +1,5 @@
 import { Channel, ConsumeMessage } from 'amqplib';
-import { getConnection } from './connection';
+import { connectToRabbitMQ } from './connection';
 
 const processMessage = (msg: ConsumeMessage) => {
     console.log("Received message:", msg.content.toString());
@@ -8,9 +8,8 @@ const processMessage = (msg: ConsumeMessage) => {
        console.log(`Received userId: ${userId}`);
 };
 
-export const subscribeToMessages = async (exchange: string, routingKey: string, queueName: string): Promise<void> => {
-    const connection = await getConnection();
-    const channel: Channel = await connection.createChannel();
+export const subscribeToMessagesTest = async (exchange: string, routingKey: string, queueName: string): Promise<void> => {
+    const { connection, channel } = await connectToRabbitMQ();
 
     await channel.assertExchange(exchange, 'topic', { durable: false });
     const q = await channel.assertQueue(queueName, { durable: true });
