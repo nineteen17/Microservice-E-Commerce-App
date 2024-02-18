@@ -10,6 +10,7 @@ const startServer = async () => {
 
   await subscribeToMessages('product-exchange', 'product.created', 'product_created_queue');
   await subscribeToMessages('product-exchange', 'product.updated', 'product_updated_queue');
+  await subscribeToMessages('product-exchange', 'product.deleted', 'product_deleted_queue');
   console.log('Subscribed to product queues.');
 
   const PORT = 4000
