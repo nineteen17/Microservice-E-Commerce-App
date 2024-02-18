@@ -3,7 +3,6 @@ import { publishMessage } from '../rabbitmq/publish';
 import { errorMessage } from '../utils/errorMessage'
 const router = express.Router();
 
-// Route to handle publishing a message
 router.post('/user-service/test-message', async (req, res) => {
   const messagePayload = req.body;
   console.log(`Message Recived: ${messagePayload}`);

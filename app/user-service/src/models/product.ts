@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema<IProduct>({
         type: String,
         required: true,
     },
-    stockLevel: { // to track if the item is in stock
+    stockLevel: {
         type: Number,
         required: true,
         default: 0

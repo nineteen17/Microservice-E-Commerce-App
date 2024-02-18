@@ -31,6 +31,7 @@ export const getUserProfile = async (req: any, res: Response) => {
 } 
 
 export const updateUserProfile = async (req: any, res: Response) => {
+
     try {
         const user = await UserModel.findById(req.user._id);
 
@@ -38,19 +39,17 @@ export const updateUserProfile = async (req: any, res: Response) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Check if the request includes an old password and a new password
         if (req.body.oldPassword && req.body.newPassword) {
-            // Compare the old password with the user's hashed password in the database
+
             const isMatch = await bcrypt.compare(req.body.oldPassword, user.password);
+
             if (!isMatch) {
-                // If the old password doesn't match, return an error response
                 return res.status(400).json({ message: "Old password is incorrect" });
             }
-            // If the old password matches, hash the new password and set it to the user's password
             const hashedNewPassword = await bcrypt.hash(req.body.newPassword, 12);
             user.password = hashedNewPassword;
         }
-        // Update other user fields
+
         if (req.body.email && req.body.email !== user.email) {
             user.email = req.body.email;
         }
@@ -63,7 +62,7 @@ export const updateUserProfile = async (req: any, res: Response) => {
         if (req.body.phoneNumber && req.body.phoneNumber !== user.phoneNumber) {
             user.phoneNumber = req.body.phoneNumber;
         }
-        // Save the updated user to the database
+
         if (user.isModified()) {
             const updatedUser = await user.save();
             res.json({
@@ -71,7 +70,7 @@ export const updateUserProfile = async (req: any, res: Response) => {
                 lastName: updatedUser.lastName,
                 phoneNumber: updatedUser.phoneNumber,
             });
-        }
+        };
     } catch (err) {
         res.status(500).json({ message: "Error updating user profile", error: err });
     }
@@ -115,19 +114,15 @@ export const deleteWatchlistProduct = async (req: any, res: Response) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Ensure watchlist is initialized if it's undefined
         user.watchlist = user.watchlist || [];
         console.log("user.watclist:", user.watchlist);
 
-        // Find the index of the product in the watchlist
         const productIndex = user.watchlist.findIndex(item => item._id?.toString() === productId);
 
-        // Check if the product was found in the watchlist
         if (productIndex === -1) {
             return res.status(404).json({ message: "Product not found in watchlist" });
         }
 
-        // Remove the product from the watchlist
         user.watchlist.splice(productIndex, 1);
         user.markModified('watchlist');
         await user.save();

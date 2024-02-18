@@ -19,7 +19,7 @@ const verifyRefreshToken = (refreshToken: string): Promise<DecodedToken> => {
                     return reject({ error: true, message: "Invalid refresh token" });
                 }
 
-                const payload = decoded as DecodedToken; // Cast decoded to DecodedToken
+                const payload = decoded as DecodedToken;
                 if (payload.userId) {
                     resolve(payload);
                 } else {

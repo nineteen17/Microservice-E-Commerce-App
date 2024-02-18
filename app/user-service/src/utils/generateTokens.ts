@@ -3,6 +3,7 @@ import UserTokenModel from "../models/userToken";
 import { IUser } from "../models/user";
 
 const generateTokens = async (user: IUser) => {
+
 	try {
 		const payload = { _id: user._id};
 		const accessToken = jwt.sign(
