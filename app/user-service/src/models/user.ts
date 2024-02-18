@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: {
     type: String,
-    required: true, // Always required, since Google sign-in is removed
+    required: true,
   },
   firstName: String,
   lastName: String,

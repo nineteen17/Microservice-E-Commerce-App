@@ -22,11 +22,10 @@ declare global {
         const decoded = jwt.verify(
             token,
             process.env.ACCESS_TOKEN_PRIVATE_KEY
-        ) as jwt.JwtPayload; // Cast to JwtPayload for TypeScript
+        ) as jwt.JwtPayload;
 
-        // Assuming the user's ID is stored in the token payload under `_id`
         if (decoded._id) {
-            req.user = { _id: decoded._id }; // Or simply req.user = decoded._id; based on your preference
+            req.user = { _id: decoded._id };
         } else {
             return res
                 .status(403)

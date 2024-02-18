@@ -1,16 +1,13 @@
 import amqplib, { Channel, Connection } from 'amqplib';
 
-const amqpUrl: string = 'amqp://rabbitmq:5672'
-; 
+const amqpUrl: string = 'amqp://rabbitmq:5672'; 
 
-// Separate function to handle RabbitMQ connection
 export const connectToRabbitMQ = async (): Promise<{ connection: Connection; channel: Channel }> => {
   const connection: Connection = await amqplib.connect(amqpUrl);
   const channel: Channel = await connection.createChannel();
   return { connection, channel };
 };
 
-// Function to publish a message
 export const publishMessage = async (exchange: string, routingKey: string, messagePayload: Object): Promise<void> => {
   let connection: Connection | null = null;
   let channel: Channel | null = null;
@@ -26,7 +23,7 @@ export const publishMessage = async (exchange: string, routingKey: string, messa
 
   } catch (error) {
     console.error('Failed to publish message:', error);
-    throw error; // Rethrow the error to handle it in the calling function
+    throw error;
   } finally {
     if (channel) await channel.close();
     if (connection) await connection.close();
