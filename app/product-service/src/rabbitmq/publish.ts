@@ -14,7 +14,7 @@ export const publishMessage = async (exchange: string, routingKey: string, messa
   
     } catch (error) {
       console.error('Failed to publish message:', error);
-      throw error; // Rethrow the error to handle it in the calling function
+      throw error;
     } finally {
       if (channel) await channel.close();
       if (connection) await connection.close();

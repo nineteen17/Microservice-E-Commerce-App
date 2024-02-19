@@ -28,7 +28,6 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
   try {
     const query = ProductModel.find();
 
-    // Handle string fields with case-insensitive partial matching
     const stringFields = ['name', 'brand', 'type'];
     stringFields.forEach(field => {
       const fieldValue = req.query[field];
@@ -37,7 +36,6 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
       }
     });
 
-    // Handle numeric fields for direct matching
     const numericFields = ['volume', 'price', 'alcoholContent'];
     numericFields.forEach(field => {
       const fieldValue = req.query[field];
@@ -49,10 +47,10 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
       }
     });
 
-    // Sorting
+
     const sortParam = req.query.sort as string | undefined;
     if (sortParam) {
-      const sortDirection = sortParam.startsWith('-') ? 'desc' : 'asc'; // Use 'desc' for descending
+      const sortDirection = sortParam.startsWith('-') ? 'desc' : 'asc'; 
       const fieldName = sortParam.startsWith('-') ? sortParam.substring(1) : sortParam;
       query.sort({ [fieldName]: sortDirection });
     }
@@ -114,11 +112,9 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
   };
 
 
-  // Example route for the Search API
 export const searchProduct = async (req: Request, res: Response) => {
   const { term } = req.query;
-  // Implement search logic here, possibly searching across multiple fields
-  // Example: searching in 'name' and 'description' fields of a Product
+
   try {
     const results = await ProductModel.find({
       $or: [

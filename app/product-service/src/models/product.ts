@@ -30,37 +30,37 @@ const ProductSchema = new mongoose.Schema<IProduct>({
     required: true,
     trim: true
   },
-  type: { // e.g., Lager, Ale, Stout, IPA, etc.
+  type: {
     type: String,
     required: true,
     trim: true
   },
-  alcoholContent: { // as a percentage
+  alcoholContent: {
     type: Number,
     required: true
   },
-  volume: { // in milliliters (ml)
+  volume: {
     type: Number,
     required: true
   },
-  price: { // assuming price is in a single currency; adjust accordingly
+  price: {
     type: Number,
     required: true
   },
-  description: { // a short description of the beer
+  description: {
     type: String,
     required: true
   },
-  imageUrl: { // URL to an image of the beer
+  imageUrl: {
     type: String,
-    required: false // not making it required as not all products may have an image initially
+    required: false
   },
-  stockLevel: { // to track if the item is in stock
+  stockLevel: {
     type: Number,
     required: true,
     default: 0
   },
-  createdAt: { // to record when the product was added
+  createdAt: {
     type: Date,
     default: Date.now
   }

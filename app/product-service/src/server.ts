@@ -4,8 +4,8 @@ import connectDB  from './db';
 import { subscribeToMessagesTest } from './rabbitmq/subscribe';
 
 const startServer = async () => {
-    env.config();
 
+    env.config();
 
     await connectDB();
     await subscribeToMessagesTest('user-exchange', 'user-message', 'user-queue');
