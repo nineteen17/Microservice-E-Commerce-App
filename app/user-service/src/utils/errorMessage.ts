@@ -1,4 +1,5 @@
 export const errorMessage = (error: unknown): string => {
+
     let message: string;
 
     if (error instanceof Error) {

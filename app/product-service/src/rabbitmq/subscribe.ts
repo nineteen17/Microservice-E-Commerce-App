@@ -23,5 +23,4 @@ export const subscribeToMessagesTest = async (exchange: string, routingKey: stri
     });
 
     console.log(`Subscribed to ${q.queue}`);
-    // Note: Consider how and where to handle channel and connection cleanup
 };
