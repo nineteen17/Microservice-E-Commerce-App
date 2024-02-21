@@ -24,3 +24,10 @@ spec:
             name: product-service-svc
             port:
               number: 4001
+      - path: /order-service(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: order-service-svc
+            port:
+              number: 4002
