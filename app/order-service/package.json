@@ -22,6 +22,7 @@
   "homepage": "",
   "dependencies": {
     "@jest-mock/express": "^2.0.1",
+    "@sendgrid/mail": "^8.1.1",
     "amqplib": "^0.10.3",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^5.0.0",

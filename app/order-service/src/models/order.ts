@@ -11,7 +11,7 @@ interface Address {
 interface Item {
   productId: mongoose.Schema.Types.ObjectId;
   name: string;
-  description: string;
+  imageUrl: string;
   price: number;
   quantity: number;
 }
@@ -31,11 +31,13 @@ interface Shipping {
   trackingNumber?: string;
 }
 
-interface OrderDocument extends mongoose.Document {
-  customer: {
-    customerId: mongoose.Schema.Types.ObjectId;
-    name: string;
+export interface OrderDocument extends mongoose.Document {
+  user: {
+    userId: mongoose.Schema.Types.ObjectId;
+    firstName: string;
+    lastName: string;
     email: string;
+    phoneNumber?: String;
     address: Address;
   };
   items: Item[];
@@ -43,13 +45,15 @@ interface OrderDocument extends mongoose.Document {
   shipping: Shipping;
   orderDate: Date;
   estimatedDeliveryDate?: Date;
-  status: 'New' | 'Pending' | 'Complete' | 'Cancelled';
+  status: 'Pending' | 'Complete' | 'Cancelled';
 }
 
 const orderSchema = new mongoose.Schema<OrderDocument>({
-    customer: {
-      customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
-      name: { type: String, required: true },
+    user: {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      phoneNumber: String,
       email: { type: String, required: true },
       address: {
         street: { type: String, required: true },
@@ -62,7 +66,7 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
     items: [{
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
       name: { type: String, required: true },
-      description: { type: String, required: true },
+      imageUrl: { type: String, required: true },
       price: { type: Number, required: true },
       quantity: { type: Number, required: true },
     }],
@@ -87,7 +91,7 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
     },
     orderDate: { type: Date, default: Date.now },
     estimatedDeliveryDate: Date,
-    status: { type: String, required: true, enum: ['New', 'Pending', 'Complete', 'Cancelled'] },
+    status: { type: String, required: true, enum: ['Pending', 'Complete', 'Cancelled'], default: 'Pending' },
   }, { timestamps: true });
   
 orderSchema.index({ orderDate: 1 }, {
