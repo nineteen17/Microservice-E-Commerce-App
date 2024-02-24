@@ -9,13 +9,12 @@ const rollbackInventoryForExpiredOrder = async (orderId: mongoose.Types.ObjectId
     const updatePromises = inventoryTracking.items.map(item =>
       ProductModel.updateOne(
         { _id: item.productId },
-        { $inc: { stockLevel: item.stockCount } } // Ensure the field name matches your schema
+        { $inc: { stockLevel: item.stockCount } }
       )
     );
 
     await Promise.all(updatePromises);
 
-    // Delete the inventory tracking document to clean up
     await InventoryTrackingModel.deleteOne({ orderId });
   }
 };
@@ -27,7 +26,7 @@ export const initializeOrderChangeStream = () => {
   changeStream.on('change', async (change) => {
     if (change.operationType === 'delete') {
       const orderId = change.documentKey._id;
-      await rollbackInventoryForExpiredOrder(new mongoose.Types.ObjectId(orderId)); // Convert string to ObjectId
+      await rollbackInventoryForExpiredOrder(new mongoose.Types.ObjectId(orderId));
     }
   });
 
