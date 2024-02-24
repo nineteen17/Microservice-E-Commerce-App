@@ -5,7 +5,7 @@ import { IUser } from "../models/user";
 const generateTokens = async (user: IUser) => {
 
 	try {
-		const payload = { _id: user._id};
+		const payload = { _id: user._id, email: user.email };
 		const accessToken = jwt.sign(
 			payload,
 			process.env.ACCESS_TOKEN_PRIVATE_KEY,

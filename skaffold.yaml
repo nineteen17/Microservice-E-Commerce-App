@@ -14,9 +14,14 @@ build:
       context: app/user-service
       docker:
         dockerfile: Dockerfile
+    - image: nineteen17dh/order-service
+      context: app/order-service
+      docker:
+        dockerfile: Dockerfile        
 manifests:
   rawYaml:
     - k8s/dev/product-service-manifests.yaml
     - k8s/dev/user-service-manifests.yaml
     - k8s/dev/ingress.yaml
     - k8s/dev/rabbitmq.yaml
+    - k8s/dev/order-service-manifests.yaml
