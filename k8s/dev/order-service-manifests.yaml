@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: order-service
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: order-service
+ template:
+   metadata:
+     labels:
+       app: order-service
+   spec:
+     containers:
+     - name: order-service
+       image: nineteen17dh/order-service
+       resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
+       ports:
+       - containerPort: 4002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service-svc
+spec:
+  selector:
+    app: order-service
+  ports:
+  - protocol: TCP
+    port: 4002
+    targetPort: 4002
