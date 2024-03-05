@@ -10,7 +10,7 @@ export const createOrder = async (req: Request, res: Response) => {
     const { order, checkoutSessionUrl } = await createOrderService(req.body);
     res.status(201).json({
       order,
-      checkoutSessionUrl, // Include the checkout session URL in the response
+      checkoutSessionUrl,
     });
   } catch (error) {
     res.status(400).json({
