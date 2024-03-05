@@ -80,10 +80,8 @@ export const createOrderService = async (rawOrderData: any): Promise<{ order: Or
   try {
     await session.startTransaction();
 
-    // Check and deduct stock before creating the checkout session
     await checkAndDeductStock(orderData.items, session);
 
-    // Create Stripe Checkout session
     const stripeSession = await createStripeCheckoutSession(orderData);
 
     const order = new OrderModel({ ...orderData, payment: { ...orderData.payment, transactionId: stripeSession.id, status: 'Pending' } });
