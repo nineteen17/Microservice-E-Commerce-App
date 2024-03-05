@@ -17,7 +17,6 @@ const AddressSchema = z.object({
   });
   
   const PaymentSchema = z.object({
-    method: z.string(),
     transactionId: z.string().optional(),
     status: z.enum(['Paid', 'Pending', 'Failed']),
     total: z.number().positive(),

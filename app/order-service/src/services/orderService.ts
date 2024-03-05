@@ -11,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 type OrderData = z.infer<typeof OrderSchema>;
 
-const deductStockAndCreateTrackingRecords = async (items: OrderData['items'], session: mongoose.ClientSession) => {
+const checkAndDeductStock = async (items: OrderData['items'], session: mongoose.ClientSession) => {
   const tasks = items.map(async (item) => {
     const product = await ProductModel.findById(item.productId).session(session);
     if (!product || product.stockLevel < item.quantity) {
@@ -20,37 +20,47 @@ const deductStockAndCreateTrackingRecords = async (items: OrderData['items'], se
 
     product.stockLevel -= item.quantity;
     await product.save({ session });
-
   });
 
   await Promise.all(tasks);
 };
 
-const preAuthorizePayment = async (amount: number, paymentMethodId: string, customerId: string): Promise<string> => {
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount,
-    currency: 'nzd',
-    customer: customerId,
-    payment_method: paymentMethodId,
-    confirmation_method: 'manual',
-    confirm: true,
-    capture_method: 'manual',
-    return_url: 'http://nineteen17dns.com/success'
+const createStripeCheckoutSession = async (orderData: OrderData) => {
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [
+      ...orderData.items.map(item => ({
+        price_data: {
+          currency: 'nzd',
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.quantity,
+      })),
+      {
+        price_data: {
+          currency: 'nzd',
+          product_data: {
+            name: 'Shipping',
+          },
+          unit_amount: orderData.shipping.cost * 100,
+        },
+        quantity: 1,
+      }
+    ],
+    mode: 'payment',
+    success_url: 'http://nineteen17dns.com/checkout-success',
+    cancel_url: 'http://nineteen17dns.com/checkout-cancel',
   });
-
-  if (paymentIntent.status !== 'requires_capture') {
-    throw new Error('Payment pre-authorization failed');
-  }
-
-  return paymentIntent.id;
+  
+  return session;
 };
 
-
-const capturePayment = async (paymentIntentId: string): Promise<void> => {
-  const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId);
-  if (paymentIntent.status !== 'succeeded') {
-    throw new Error('Payment capture failed');
-  }
+export const updateOrderStatus = async (orderId: string, status: 'Pending' | 'Complete' | 'Cancelled') => {
+  await OrderModel.findByIdAndUpdate(orderId, { status });
 };
 
 const rollbackInventory = async (items: OrderData['items'], session: mongoose.ClientSession) => {
@@ -63,42 +73,29 @@ const rollbackInventory = async (items: OrderData['items'], session: mongoose.Cl
   }));
 };
 
-
-export const updateOrderStatus = async (orderId: string, status: string) => {
-  await OrderModel.findByIdAndUpdate(orderId, { status });
-};
-
-export const createOrderService = async (rawOrderData: any): Promise<OrderDocument> => {
+export const createOrderService = async (rawOrderData: any): Promise<{ order: OrderDocument, checkoutSessionUrl: string }> => {
   const session = await mongoose.startSession();
   let orderData: OrderData = OrderSchema.parse(rawOrderData);
 
   try {
     await session.startTransaction();
-    const totalAmountInDollars = orderData.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const totalAmountInCents = Math.round(totalAmountInDollars * 100); // Convert to cents
 
-    // Create a Customer in Stripe with the email from orderData
-    const customer = await stripe.customers.create({
-      email: orderData.user.email,
-    });
+    // Check and deduct stock before creating the checkout session
+    await checkAndDeductStock(orderData.items, session);
 
-    // Attach the PaymentMethod to the Customer
-    await stripe.paymentMethods.attach(orderData.payment.method, {
-      customer: customer.id,
-    });
+    // Create Stripe Checkout session
+    const stripeSession = await createStripeCheckoutSession(orderData);
 
-    // Create and confirm the PaymentIntent with the Customer and PaymentMethod
-    const paymentIntentId = await preAuthorizePayment(totalAmountInCents, orderData.payment.method, customer.id);
-
-    await deductStockAndCreateTrackingRecords(orderData.items, session);
-
-    await capturePayment(paymentIntentId);
-
-    const order = new OrderModel({ ...orderData, payment: { ...orderData.payment, transactionId: paymentIntentId, status: 'Pending' } });
+    const order = new OrderModel({ ...orderData, payment: { ...orderData.payment, transactionId: stripeSession.id, status: 'Pending' } });
     await order.save({ session });
 
     await session.commitTransaction();
-    return order;
+
+    if (!stripeSession.url) {
+      throw new Error('Failed to create Stripe checkout session.');
+    }
+    
+    return { order, checkoutSessionUrl: stripeSession.url };    
   } catch (error) {
     console.error("An error occurred:", error);
 
