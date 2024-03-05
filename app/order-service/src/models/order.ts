@@ -17,7 +17,6 @@ interface Item {
 }
 
 interface Payment {
-  method: string;
   transactionId?: string;
   status: 'Paid' | 'Pending' | 'Failed';
   total: number;
@@ -44,7 +43,6 @@ export interface OrderDocument extends mongoose.Document {
   payment: Payment;
   shipping: Shipping;
   orderDate: Date;
-  estimatedDeliveryDate?: Date;
   status: 'Pending' | 'Complete' | 'Cancelled';
 }
 
@@ -71,7 +69,6 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
       quantity: { type: Number, required: true },
     }],
     payment: {
-      method: { type: String, required: true },
       transactionId: String,
       status: { type: String, required: true, enum: ['Paid', 'Pending', 'Failed'] },
       total: { type: Number, required: true },
@@ -90,13 +87,8 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
       trackingNumber: String,
     },
     orderDate: { type: Date, default: Date.now },
-    estimatedDeliveryDate: Date,
     status: { type: String, required: true, enum: ['Pending', 'Complete', 'Cancelled'], default: 'Pending' },
   }, { timestamps: true });
   
-orderSchema.index({ orderDate: 1 }, {
-  expireAfterSeconds: 15 * 60, 
-  partialFilterExpression: { status: 'Pending' } 
-});
 
 export const OrderModel = mongoose.model<OrderDocument>('Order', orderSchema);

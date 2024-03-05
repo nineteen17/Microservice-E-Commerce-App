@@ -2,16 +2,14 @@ import env from 'dotenv'
 env.config()
 import app from "./app"
 import connectDB from './db'
-import { initializeOrderChangeStream } from './streams/OrderChangeStream'
 import { subscribeToMessages } from './rabbitmq/subscribe'
+import { connectToRabbitMQ } from './rabbitmq/connection'
 
 const startServer = async () => {
 
-  await connectDB()
-  initializeOrderChangeStream()
-  await subscribeToMessages('product-exchange', 'product.created', 'product_created_queue');
-  await subscribeToMessages('product-exchange', 'product.updated', 'product_updated_queue');
-  await subscribeToMessages('product-exchange', 'product.deleted', 'product_deleted_queue');
+  connectDB();
+  connectToRabbitMQ();
+  await subscribeToMessages('product-exchange', 'order-service-queue', ['product.created', 'product.updated', 'product.deleted']);
   console.log('Subscribed to product queues.');
 
   const PORT = 4002
