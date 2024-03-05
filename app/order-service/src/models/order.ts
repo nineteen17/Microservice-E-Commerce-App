@@ -44,7 +44,6 @@ export interface OrderDocument extends mongoose.Document {
   payment: Payment;
   shipping: Shipping;
   orderDate: Date;
-  estimatedDeliveryDate?: Date;
   status: 'Pending' | 'Complete' | 'Cancelled';
 }
 
@@ -90,13 +89,8 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
       trackingNumber: String,
     },
     orderDate: { type: Date, default: Date.now },
-    estimatedDeliveryDate: Date,
     status: { type: String, required: true, enum: ['Pending', 'Complete', 'Cancelled'], default: 'Pending' },
   }, { timestamps: true });
   
-orderSchema.index({ orderDate: 1 }, {
-  expireAfterSeconds: 15 * 60, 
-  partialFilterExpression: { status: 'Pending' } 
-});
 
 export const OrderModel = mongoose.model<OrderDocument>('Order', orderSchema);

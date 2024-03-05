@@ -49,7 +49,7 @@ const processMessage = async (msg: ConsumeMessage, routingKey: string) => {
     }
 };
 
-export const subscribeToMessages = async (exchange: string, routingKey: string, queueName: string): Promise<void> => {
+export const subscribeToMessages = async (exchange: string, queueName: string, routingKeys: string[]): Promise<void> => {
     try {
         const { channel } = await connectToRabbitMQ();
 
@@ -59,13 +59,15 @@ export const subscribeToMessages = async (exchange: string, routingKey: string, 
         const q = await channel.assertQueue(queueName, { durable: true });
         console.log(`Queue "${queueName}" asserted.`);
 
-        await channel.bindQueue(q.queue, exchange, routingKey);
-        console.log(`Queue "${queueName}" bound to exchange "${exchange}" with routing key "${routingKey}".`);
+        for (const routingKey of routingKeys) {
+            await channel.bindQueue(q.queue, exchange, routingKey);
+            console.log(`Queue "${queueName}" bound to exchange "${exchange}" with routing key "${routingKey}".`);
+        }
 
         channel.consume(q.queue, async (msg) => {
             if (msg !== null) {
                 try {
-                    await processMessage(msg, routingKey);
+                    await processMessage(msg, msg.fields.routingKey);
                     channel.ack(msg);
                 } catch (error) {
                     console.error('Error processing message:', error);

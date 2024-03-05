@@ -17,6 +17,10 @@ build:
     - image: nineteen17dh/order-service
       context: app/order-service
       docker:
+        dockerfile: Dockerfile
+    - image: nineteen17dh/client
+      context: app/client
+      docker:
         dockerfile: Dockerfile        
 manifests:
   rawYaml:
@@ -25,3 +29,4 @@ manifests:
     - k8s/dev/ingress.yaml
     - k8s/dev/rabbitmq.yaml
     - k8s/dev/order-service-manifests.yaml
+    - k8s/dev/client-manifests.yaml
