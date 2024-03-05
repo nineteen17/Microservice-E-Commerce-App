@@ -22,6 +22,7 @@ export const RefreshTokenShema = z.object({
     USER_MONGO_URI: z.string(),
     ACCESS_TOKEN_PRIVATE_KEY: z.string(),
     REFRESH_TOKEN_PRIVATE_KEY: z.string(),
+    AMQP_URL: z.string()
   })
 
   export const myEnvVariables = envVariables.parse(

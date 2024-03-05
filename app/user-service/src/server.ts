@@ -3,15 +3,14 @@ env.config()
 import app from "./app"
 import connectDB from './db'
 import { subscribeToMessages } from './rabbitmq/subscribe'
+import { connectToRabbitMQ } from './rabbitmq/connection'
 
 const startServer = async () => {
 
-  connectDB()
-
-  await subscribeToMessages('product-exchange', 'product.created', 'product_created_queue');
-  await subscribeToMessages('product-exchange', 'product.updated', 'product_updated_queue');
-  await subscribeToMessages('product-exchange', 'product.deleted', 'product_deleted_queue');
-  console.log('Subscribed to product queues.');
+  connectDB();
+  await connectToRabbitMQ();
+  await subscribeToMessages('product-exchange', 'user-service-queue', ['product.created', 'product.updated', 'product.deleted']);
+  await subscribeToMessages('order-exchange', 'user-service-order-queue', ['order.updated']);
 
   const PORT = 4000
   app.listen(PORT, () => {
