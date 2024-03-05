@@ -1,15 +1,15 @@
 import app from "./app";
 import env from 'dotenv';
+env.config();
 import connectDB  from './db';
-import { subscribeToMessagesTest } from './rabbitmq/subscribe';
+import { subscribeToMessages } from './rabbitmq/subscribe';
+import { connectToRabbitMQ } from "./rabbitmq/connection";
 
 const startServer = async () => {
 
-    env.config();
-
     await connectDB();
-    await subscribeToMessagesTest('user-exchange', 'user-message', 'user-queue');
-
+    await connectToRabbitMQ();
+    await subscribeToMessages('order-exchange', 'product-service-order-queue', ['order.updated']);
     const PORT = process.env.PORT || 4001;
     app.listen(PORT, () => {
         console.log(`Server started on port ${PORT}`);

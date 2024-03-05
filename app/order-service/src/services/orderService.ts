@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
 import { OrderDocument, OrderModel } from '../models/order';
 import { ProductModel } from '../models/product';
-import { InventoryTrackingModel, IInventoryTracking } from '../models/inventoryTracking';
 import { OrderSchema } from "../schemas/orderSchema";
 import z from 'zod';
+import Stripe from 'stripe';
+import env from 'dotenv';
+env.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 type OrderData = z.infer<typeof OrderSchema>;
 
-const deductStockAndCreateTrackingRecords = async (items: OrderData['items'], session: mongoose.ClientSession): Promise<IInventoryTracking[]> => {
-  const inventoryTrackingRecords: IInventoryTracking[] = [];
-
-  for (const item of items) {
+const checkAndDeductStock = async (items: OrderData['items'], session: mongoose.ClientSession) => {
+  const tasks = items.map(async (item) => {
     const product = await ProductModel.findById(item.productId).session(session);
     if (!product || product.stockLevel < item.quantity) {
       throw new Error(`Insufficient stock for product ${item.productId}`);
@@ -18,46 +20,91 @@ const deductStockAndCreateTrackingRecords = async (items: OrderData['items'], se
 
     product.stockLevel -= item.quantity;
     await product.save({ session });
+  });
 
-    const trackingRecord: IInventoryTracking = {
-      orderId: undefined,
-      items: [{
-        productId: product._id,
-        stockCount: item.quantity
-      }],
-      createdAt: new Date(),
-    };
-
-    inventoryTrackingRecords.push(trackingRecord);
-  }
-
-  return inventoryTrackingRecords;
+  await Promise.all(tasks);
 };
 
+const createStripeCheckoutSession = async (orderData: OrderData) => {
 
-const createOrderWithInventoryCheck = async (rawOrderData: any): Promise<OrderDocument> => {
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [
+      ...orderData.items.map(item => ({
+        price_data: {
+          currency: 'nzd',
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.quantity,
+      })),
+      {
+        price_data: {
+          currency: 'nzd',
+          product_data: {
+            name: 'Shipping',
+          },
+          unit_amount: orderData.shipping.cost * 100,
+        },
+        quantity: 1,
+      }
+    ],
+    mode: 'payment',
+    success_url: 'http://nineteen17dns.com/checkout-success',
+    cancel_url: 'http://nineteen17dns.com/checkout-cancel',
+  });
+  
+  return session;
+};
+
+export const updateOrderStatus = async (orderId: string, status: 'Pending' | 'Complete' | 'Cancelled') => {
+  await OrderModel.findByIdAndUpdate(orderId, { status });
+};
+
+const rollbackInventory = async (items: OrderData['items'], session: mongoose.ClientSession) => {
+  await Promise.all(items.map(async (item) => {
+    await ProductModel.updateOne(
+      { _id: item.productId },
+      { $inc: { stockLevel: item.quantity } },
+      { session }
+    );
+  }));
+};
+
+export const createOrderService = async (rawOrderData: any): Promise<{ order: OrderDocument, checkoutSessionUrl: string }> => {
   const session = await mongoose.startSession();
+  let orderData: OrderData = OrderSchema.parse(rawOrderData);
+
   try {
-    session.startTransaction();
+    await session.startTransaction();
 
-    const orderData: OrderData = OrderSchema.parse(rawOrderData);
-    const order = await new OrderModel(orderData).save({ session });
+    // Check and deduct stock before creating the checkout session
+    await checkAndDeductStock(orderData.items, session);
 
-    const inventoryTrackingRecords = await deductStockAndCreateTrackingRecords(orderData.items, session);
+    // Create Stripe Checkout session
+    const stripeSession = await createStripeCheckoutSession(orderData);
 
-    inventoryTrackingRecords.forEach(async (record) => {
-      record.orderId = order._id;
-      await new InventoryTrackingModel(record).save({ session });
-    });
+    const order = new OrderModel({ ...orderData, payment: { ...orderData.payment, transactionId: stripeSession.id, status: 'Pending' } });
+    await order.save({ session });
 
     await session.commitTransaction();
-    return order;
+
+    if (!stripeSession.url) {
+      throw new Error('Failed to create Stripe checkout session.');
+    }
+    
+    return { order, checkoutSessionUrl: stripeSession.url };    
   } catch (error) {
+    console.error("An error occurred:", error);
+
+    if (orderData && orderData.items) {
+      await rollbackInventory(orderData.items, session);
+    }
     await session.abortTransaction();
     throw error;
   } finally {
     session.endSession();
   }
 };
-
-export { createOrderWithInventoryCheck };
