@@ -1,15 +1,15 @@
-import './App.css'
-import Count from './components/Count'
-import Counter from './components/Counter'
+import "./App.css";
+import { AppProvider } from "./providers/AppProviders";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-
   return (
     <>
-      <Count />
-      <Counter />
+      <AppProvider>
+        <AppRoutes />
+      </AppProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
