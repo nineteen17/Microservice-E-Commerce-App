@@ -82,3 +82,4 @@ yarn-debug.log*
 yarn-error.log*
 commands
 commands.html
+k8s/dev/aws-secrets.yaml
