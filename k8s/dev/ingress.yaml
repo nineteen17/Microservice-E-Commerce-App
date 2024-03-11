@@ -19,7 +19,7 @@ spec:
               number: 4000
       - path: /product-service(/|$)(.*)
         pathType: Prefix
-        backend:
+        backend: 
           service:
             name: product-service-svc
             port:
