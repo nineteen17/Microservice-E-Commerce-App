@@ -28,6 +28,14 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
   try {
     const query = ProductModel.find();
 
+    const { term } = req.query;
+    if (term) {
+      query.or([
+        { name: { $regex: term, $options: 'i' } },
+        { description: { $regex: term, $options: 'i' } },
+      ]);
+    }
+
     const stringFields = ['name', 'brand', 'type'];
     stringFields.forEach(field => {
       const fieldValue = req.query[field];
@@ -47,10 +55,9 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
       }
     });
 
-
     const sortParam = req.query.sort as string | undefined;
     if (sortParam) {
-      const sortDirection = sortParam.startsWith('-') ? 'desc' : 'asc'; 
+      const sortDirection = sortParam.startsWith('-') ? 'desc' : 'asc';
       const fieldName = sortParam.startsWith('-') ? sortParam.substring(1) : sortParam;
       query.sort({ [fieldName]: sortDirection });
     }
@@ -58,7 +65,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     const products = await query.exec();
     res.json(products);
   } catch (error) {
-    res.status(500).send({ message: error});
+    res.status(500).send({ message: error });
   }
 };
 

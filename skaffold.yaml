@@ -30,3 +30,4 @@ manifests:
     - k8s/dev/rabbitmq.yaml
     - k8s/dev/order-service-manifests.yaml
     - k8s/dev/client-manifests.yaml
+    - k8s/dev/aws-secrets.yaml
