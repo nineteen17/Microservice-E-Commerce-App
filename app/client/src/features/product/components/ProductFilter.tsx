@@ -1,6 +1,6 @@
 import { Container } from '@/components/container/Container'
 
-const ProductFiler = () => {
+const ProductFilter = () => {
   return (
     <Container variant={'fullWidth'} className='bg-rose-500'>
         Product Filter
@@ -8,4 +8,4 @@ const ProductFiler = () => {
   )
 }
 
-export default ProductFiler
+export default ProductFilter
