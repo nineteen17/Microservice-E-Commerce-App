@@ -5,17 +5,19 @@ import { axios } from '@/lib/axios';
 import { Product, ProductParams } from '../types';
 
 const getProductParams = async (params: ProductParams): Promise<Product[]> => {
-  const query = new URLSearchParams(params as Record<string, string>).toString();
-  
+  // Filter out undefined parameters
+  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== undefined));
+
+  // Construct the query string
+  const query = Object.keys(filteredParams).length > 0 ? `?${new URLSearchParams(filteredParams as Record<string, string>).toString()}` : '';
+
   try {
-      const res = await axios.get(`product-service/${query}`);
-      console.log('API Response:', res);
-      console.log("hello world");
-      
-      return res.data;
+    const res = await axios.get(`product-service/${query}`);
+    console.log('API Response:', res);
+    return res.data;
   } catch (error) {
-      console.error('API Error:', error);
-      throw error; // Rethrow the error to be handled by React Query
+    console.error('API Error:', error);
+    throw error; // Rethrow the error to be handled by React Query
   }
 };
 
@@ -24,14 +26,15 @@ const getProductParams = async (params: ProductParams): Promise<Product[]> => {
 type GetProductParamsType = typeof getProductParams;
 
 export const useProductParams = (params?: ProductParams, config?: QueryConfig<GetProductParamsType>) => {
-    return useQuery<ExtractFnReturnType<GetProductParamsType>>({
-      ...config,
-      queryKey: ['searchAndFilterProducts', params],
-      queryFn: () => {
-        const result = getProductParams(params || {});
-        console.log('Query Function Result:', result);
-        return result;
-      },
+  return useQuery<ExtractFnReturnType<GetProductParamsType>>({
+    ...config,
+    queryKey: ['searchAndFilterProducts', params],
+    queryFn: () => {
+      const result = getProductParams(params || {});
+      console.log('Query Function Result:', result);
+      return result;
+    },
+    enabled: true, // Always run the query
   });
 };
 

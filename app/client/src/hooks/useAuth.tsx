@@ -1,6 +1,6 @@
 import React from "react";
 const AuthContext = React.createContext({
-    isAuthenticated: true, // Default to not authenticated
+    isAuthenticated: false, // Default to not authenticated
     user: null, // No user by default
   });
   

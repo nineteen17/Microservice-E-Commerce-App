@@ -1,14 +1,13 @@
-import ProductCard from '../components/ProductCard';
-import ProductBanner from '../components/ProductBanner';
-import ProductFiler from '../components/ProductFiler';
+import ProductList from "../components/ProductList";
+import ProductBanner from "../components/ProductBanner";
+import ProductFiler from "../components/ProductFilter";
 
 const ProductsPage: React.FC = () => {
-  
   return (
     <>
       <ProductBanner />
       <ProductFiler />
-      <ProductCard />
+      <ProductList />
     </>
   );
 };
