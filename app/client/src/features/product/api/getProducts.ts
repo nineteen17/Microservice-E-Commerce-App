@@ -5,10 +5,8 @@ import { axios } from '@/lib/axios';
 import { Product, ProductParams } from '../types';
 
 const getProductParams = async (params: ProductParams): Promise<Product[]> => {
-  // Filter out undefined parameters
   const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== undefined));
 
-  // Construct the query string
   const query = Object.keys(filteredParams).length > 0 ? `?${new URLSearchParams(filteredParams as Record<string, string>).toString()}` : '';
 
   try {
@@ -17,7 +15,7 @@ const getProductParams = async (params: ProductParams): Promise<Product[]> => {
     return res.data;
   } catch (error) {
     console.error('API Error:', error);
-    throw error; // Rethrow the error to be handled by React Query
+    throw error;
   }
 };
 
@@ -34,7 +32,7 @@ export const useProductParams = (params?: ProductParams, config?: QueryConfig<Ge
       console.log('Query Function Result:', result);
       return result;
     },
-    enabled: true, // Always run the query
+    enabled: true,
   });
 };
 
