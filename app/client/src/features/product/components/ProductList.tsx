@@ -59,7 +59,7 @@ const ProductList: React.FC = () => {
             key={product._id}
             className="flex flex-col items-center "
           >
-            <h2 className="text-lg font-semibold text-center w-full bg-white">
+            <h2 className="text-lg font-semibold text-center w-full bg-orange-400 rounded-t-lg truncate">
               {product.name}
             </h2>
             <img
@@ -70,7 +70,7 @@ const ProductList: React.FC = () => {
             <p className="text-sm text-center w-full bg-white font-semibold font-mono ">
               ${product.price}
             </p>
-            <div className="flex flex-row justify-evenly items-center w-full px-2 py-1 bg-white">
+            <div className="flex flex-row justify-evenly items-center w-full px-2 py-1 bg-white rounded-b-lg  ">
               <Button variant={'secondary'} >
                 Add To Cart
               </Button>
