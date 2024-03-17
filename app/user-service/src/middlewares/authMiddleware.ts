@@ -24,8 +24,8 @@ declare global {
             process.env.ACCESS_TOKEN_PRIVATE_KEY
         ) as jwt.JwtPayload;
 
-        if (decoded._id) {
-            req.user = { _id: decoded._id };
+        if (decoded.userId) {
+            req.user = { _id: decoded.userId };
         } else {
             return res
                 .status(403)

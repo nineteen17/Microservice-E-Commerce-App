@@ -1,10 +1,13 @@
+import Banner from "@/components/banner/Banner";
+import List from "../components/watchlist/List";
 
 const Watchlist = () => {
   return (
-    <div>
-      <div>Watchlist Route</div>
-    </div>
-  )
-}
+    <>
+      <Banner image="WATCHLIST" />
+      <List />
+    </>
+  );
+};
 
-export default Watchlist
+export default Watchlist;
