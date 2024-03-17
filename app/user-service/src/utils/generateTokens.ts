@@ -5,11 +5,11 @@ import { IUser } from "../models/user";
 const generateTokens = async (user: IUser) => {
 
 	try {
-		const payload = { _id: user._id, email: user.email };
+		const payload = { userId: user._id, email: user.email };
 		const accessToken = jwt.sign(
 			payload,
 			process.env.ACCESS_TOKEN_PRIVATE_KEY,
-			{ expiresIn: "15m" }
+			{ expiresIn: "1m" }
 		);
 		const refreshToken = jwt.sign(
 			payload,

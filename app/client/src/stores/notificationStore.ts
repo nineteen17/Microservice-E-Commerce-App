@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 
 export type Notification = {
@@ -16,12 +15,15 @@ type NotificationsStore = {
 
 export const useNotificationStore = create<NotificationsStore>((set) => ({
   notifications: [],
-  addNotification: (notification) =>
+  addNotification: (notification) => {
+    const id = Math.random().toString(36).slice(2, 11); 
     set((state) => ({
-      notifications: [...state.notifications, { id: nanoid(), ...notification }],
-    })),
-  dismissNotification: (id) =>
+      notifications: [...state.notifications, { id, ...notification }],
+    }));
+  },
+  dismissNotification: (id) => {
     set((state) => ({
       notifications: state.notifications.filter((notification) => notification.id !== id),
-    })),
+    }));
+  },
 }));
