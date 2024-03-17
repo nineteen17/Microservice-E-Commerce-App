@@ -63,7 +63,7 @@ export const logoutController = async (req: Request, res: Response) => {
 
         await UserTokenModel.findOneAndDelete({ token: refreshToken });
 
-        res.clearCookie('accessToken');
+        res.clearCookie('accessToken', { httpOnly: true  });
 
         res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
