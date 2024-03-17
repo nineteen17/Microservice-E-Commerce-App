@@ -1,11 +1,11 @@
 import ProductList from "../components/ProductList";
-import ProductBanner from "../components/ProductBanner";
 import ProductFiler from "../components/ProductFilter";
+import Banner from "@/components/banner/Banner";
 
 const ProductsPage: React.FC = () => {
   return (
     <>
-      <ProductBanner />
+      <Banner image="PRODUCTS" />
       <ProductFiler />
       <ProductList />
     </>

@@ -13,8 +13,7 @@ export const LoginSchema = z.object({
 })
 
 export const RefreshTokenShema = z.object({
-  userId: z.string().min(1, "User ID is required"),
-  token: z.string().min(1, "Refresh token is required"),
+  refreshToken: z.string().min(1, "Refresh token is required"),
 }) 
 
   // OTHER

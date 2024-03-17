@@ -7,12 +7,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Moon, ShoppingCart, Sun, Heart } from "lucide-react";
 import { Input } from "../ui/input";
 import ProfileButton from "@/components/button/ProfileButton";
-import useAuth from "@/hooks/useAuth";
+import { useAuthStore } from "@/stores/authStore";
 
 const HeaderNav = () => {
   const { theme, setTheme } = useThemeStore();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuthStore();
   
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
