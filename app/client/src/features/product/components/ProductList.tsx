@@ -3,10 +3,12 @@ import { Card } from "@/components/ui/card";
 import React from "react";
 import { useProductParams } from "../api/getProducts";
 import { useSearchParams } from "react-router-dom";
-import { ProductParams } from "../types";
+import { Product, ProductParams } from "../types";
 import { ProductSkeleton } from "@/components/skeleton/ProductSkeleton";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import { useCartStore } from "@/stores/cartStore";
+import { useNotificationStore } from "@/stores/notificationStore";
 
 const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -28,6 +30,27 @@ const ProductList: React.FC = () => {
   };
 
   const { data, isLoading, error } = useProductParams(params);
+  const { addItem } = useCartStore();
+  const addNotification = useNotificationStore(
+    (state) => state.addNotification
+  );
+
+  const handleAddToCart = (product: Product) => () => {
+    if (product._id) {
+      addItem({ itemId: product._id, quantity: 1 });
+      addNotification({
+        type: "success",
+        title: "Product Added",
+        message: `You have successfully added "${product.name}" to your cart.`,
+      });
+    } else {
+      addNotification({
+        type: "error",
+        title: "Error",
+        message: "Unable to add product to cart.",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -55,10 +78,7 @@ const ProductList: React.FC = () => {
     <Container variant="breakpointPadded" className="bg-green-300 p-6">
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-indigo-400">
         {data?.map((product) => (
-          <Card
-            key={product._id}
-            className="flex flex-col items-center "
-          >
+          <Card key={product._id} className="flex flex-col items-center ">
             <h2 className="text-lg font-semibold text-center w-full bg-orange-400 rounded-t-lg truncate">
               {product.name}
             </h2>
@@ -71,10 +91,10 @@ const ProductList: React.FC = () => {
               ${product.price}
             </p>
             <div className="flex flex-row justify-evenly items-center w-full px-2 py-1 bg-white rounded-b-lg  ">
-              <Button variant={'secondary'} >
+              <Button variant={"secondary"} onClick={handleAddToCart(product)}>
                 Add To Cart
               </Button>
-              <Heart color="red" fill="red"  />
+              <Heart color="red" fill="red" />
             </div>
           </Card>
         ))}
