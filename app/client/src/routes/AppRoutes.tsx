@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const Home = React.lazy(() => import("@/features/home/pages/Home"));
 const ProductId = React.lazy(() => import("@/features/product/pages/ProductIdPage"));
 const Products = React.lazy(() => import("@/features/product/pages/ProductsPage"));
-const Cart = React.lazy(() => import("@/features/cart/pages/Cart"));
+const Cart = React.lazy(() => import("@/features/cart/pages/CartPage"));
 const Register = React.lazy(() => import("@/features/auth/pages/RegisterPage"));
 const Login = React.lazy(() => import("@/features/auth/pages/LoginPage"));
 const Watchlist = React.lazy(() => import("@/features/user/pages/Watchlist"));
