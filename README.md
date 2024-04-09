@@ -1,4 +1,4 @@
-# Microservice E-Commerce App (Currently still in development)
+# Microservice E-Commerce App
 
 This is a microservices-based e-commerce application built using the MERN stack (MongoDB, Express.js, React.js, Node.js). The application is designed to be scalable and modular, with each service handling a specific aspect of the e-commerce platform.
 
