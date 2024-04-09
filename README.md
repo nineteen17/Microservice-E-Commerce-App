@@ -1,2 +1,44 @@
-# Microservice-E-Commerce-App
-Microservice-E-Commerce-App
+# Microservice E-Commerce App (Currently still in development)
+
+This is a microservices-based e-commerce application built using the MERN stack (MongoDB, Express.js, React.js, Node.js). The application is designed to be scalable and modular, with each service handling a specific aspect of the e-commerce platform.
+
+## Features
+
+- User authentication and authorization
+- Product listing and search
+- Shopping cart and order management
+- Payment processing with Stripe
+- Event-driven communication using RabbitMQ
+
+## Architecture
+
+The application is divided into several microservices:
+
+- `user-service`: Handles user authentication and authorization.
+- `product-service`: Manages product listings and search functionality.
+- `order-service`: Handles shopping cart and order management. Integrates with Stripe for payment processing.
+
+Communication between services is facilitated by RabbitMQ, ensuring a decoupled and scalable architecture.
+
+## Technologies
+
+- **Frontend**: React.js, Tailwind CSS
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB (hosted on Atlas)
+- **Messaging**: RabbitMQ
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes (Rancher Desktop for local development)
+- **Ingress**: Nginx (installed using Helm)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm
+- WSL (recommended)
+- Rancher Desktop (Kubernetes cluster for local development)
+- Helm (for Nginx installation)
+- Skaffold (Automatically builds docker images and deploys to k8s cluster)
+- Terraform (to create an s3 bucket to store images)
+- Atlas account (hosted database)
+- Stripe account (payments)
