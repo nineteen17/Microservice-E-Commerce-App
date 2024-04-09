@@ -4,7 +4,7 @@ This is a microservices-based e-commerce application built using the MERN stack 
 
 ## Features
 
-- User authentication and authorization
+- User authentication and authorization. (JWT Auth and Refresh Tokens)
 - Product listing and search
 - Shopping cart and order management
 - Payment processing with Stripe
@@ -22,13 +22,15 @@ Communication between services is facilitated by RabbitMQ, ensuring a decoupled 
 
 ## Technologies
 
-- **Frontend**: React.js, Tailwind CSS
+- **Frontend**: React.js, Tailwind CSS, Tanstack Query, Zustand
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB (hosted on Atlas)
 - **Messaging**: RabbitMQ
 - **Containerization**: Docker
 - **Orchestration**: Kubernetes (Rancher Desktop for local development)
 - **Ingress**: Nginx (installed using Helm)
+- **Infrastructure**: Terraform
+- **Language**: Typescript
 
 ## Getting Started
 
