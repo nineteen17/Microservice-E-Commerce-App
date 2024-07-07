@@ -4,8 +4,17 @@ metadata:
   name: ingress-svc
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    # Comment out cert-manager annotations for development
+    # cert-manager.io/cluster-issuer: "letsencrypt-dev"
+    # # Force HTTPS by redirecting HTTP to HTTPS
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  # Specify the TLS settings for HTTPS
+  # tls:
+  # - hosts:
+  #   - nineteen17dns.com
+  #   secretName: my-tls-secret # Use the secret created with mkcert
   rules:
   - host: nineteen17dns.com
     http:

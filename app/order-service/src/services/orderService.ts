@@ -52,8 +52,8 @@ const createStripeCheckoutSession = async (orderData: OrderData) => {
       }
     ],
     mode: 'payment',
-    success_url: 'http://nineteen17dns.com/checkout-success',
-    cancel_url: 'http://nineteen17dns.com/checkout-cancel',
+    success_url: 'http://nineteen17dns.com/checkout/success',
+    cancel_url: 'http://nineteen17dns.com/checkout/cancel',
   });
   
   return session;

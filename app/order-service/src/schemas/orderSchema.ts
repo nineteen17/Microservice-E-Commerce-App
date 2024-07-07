@@ -35,7 +35,7 @@ const AddressSchema = z.object({
     email: z.string().email({ message: "Invalid email format" }),
     firstName: z.string(),
     lastName: z.string(),
-    phoneNumber: z.string(),
+    phoneNumber: z.string().optional(),
     address: AddressSchema,
   });
   

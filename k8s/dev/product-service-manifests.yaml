@@ -3,7 +3,12 @@ kind: Deployment
 metadata:
  name: product-service
 spec:
- replicas: 1
+ replicas: 3  # Increase the number of replicas
+ strategy:
+   type: RollingUpdate  # Ensure RollingUpdate strategy is used
+   rollingUpdate:
+     maxUnavailable: 1  # Ensure at least one pod is always available
+     maxSurge: 1
  selector:
    matchLabels:
      app: product-service

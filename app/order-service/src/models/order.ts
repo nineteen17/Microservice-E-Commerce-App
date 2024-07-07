@@ -30,13 +30,21 @@ interface Shipping {
   trackingNumber?: string;
 }
 
+const AddressSchema = new mongoose.Schema({
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  zipCode: { type: String, required: true },
+  country: { type: String, required: true },
+});
+
 export interface OrderDocument extends mongoose.Document {
   user: {
     userId: mongoose.Schema.Types.ObjectId;
     firstName: string;
     lastName: string;
     email: string;
-    phoneNumber?: String;
+    phoneNumber?: string;
     address: Address;
   };
   items: Item[];
@@ -53,13 +61,7 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
       lastName: { type: String, required: true },
       phoneNumber: String,
       email: { type: String, required: true },
-      address: {
-        street: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        zipCode: { type: String, required: true },
-        country: { type: String, required: true },
-      },
+      address: AddressSchema,
     },
     items: [{
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -76,13 +78,7 @@ const orderSchema = new mongoose.Schema<OrderDocument>({
     shipping: {
       method: { type: String, required: true },
       cost: { type: Number, required: true },
-      address: {
-        street: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        zipCode: { type: String, required: true },
-        country: { type: String, required: true },
-      },
+      address: AddressSchema,
       status: { type: String, required: true, enum: ['Pending', 'Shipped', 'Delivered'] },
       trackingNumber: String,
     },

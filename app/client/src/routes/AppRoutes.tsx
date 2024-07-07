@@ -9,15 +9,23 @@ import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import { cn } from "@/lib/utils";
 
 const Home = React.lazy(() => import("@/features/home/pages/Home"));
-const ProductId = React.lazy(() => import("@/features/product/pages/ProductIdPage"));
-const Products = React.lazy(() => import("@/features/product/pages/ProductsPage"));
+const ProductId = React.lazy(
+  () => import("@/features/product/pages/ProductIdPage")
+);
+const Products = React.lazy(
+  () => import("@/features/product/pages/ProductsPage")
+);
 const Cart = React.lazy(() => import("@/features/cart/pages/CartPage"));
 const Register = React.lazy(() => import("@/features/auth/pages/RegisterPage"));
 const Login = React.lazy(() => import("@/features/auth/pages/LoginPage"));
 const Watchlist = React.lazy(() => import("@/features/user/pages/Watchlist"));
 const Profile = React.lazy(() => import("@/features/user/pages/Profile"));
-const Checkout = React.lazy(() => import("@/features/checkout/pages/Checkout"));
-
+const Checkout = React.lazy(
+  () => import("@/features/checkout/pages/CheckoutPage")
+);
+const Success = React.lazy(
+  () => import("@/features/checkout/pages/SuccessPage")
+);
 const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingSpinner className={cn("text-blue-500")} />}>
@@ -52,6 +60,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="checkout/success"
+            element={
+              <ProtectedRoute>
+                <Success />
               </ProtectedRoute>
             }
           />
