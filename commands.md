@@ -28,3 +28,19 @@ username = admin
 helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
   --namespace ingress-nginx --create-namespace
+
+
+<!-- Install Argocd CLI -->
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
+
+<!-- Deploy the apllication to argocd -->
+cd into the argocd folder location
+kubectl apply -f argocd-application.yaml
+kubectl apply -f argocd-server-loadbalancer.yaml
+
+<!-- Verify that the Argo CD application has been created and is syncing correctly. -->
+argocd app get argocd app sync microservice-e-commerce-app
+<!-- Sync the application -->
+argocd app sync microservice-e-commerce-app
