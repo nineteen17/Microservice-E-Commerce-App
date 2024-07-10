@@ -38,7 +38,7 @@ Communication between services is facilitated by RabbitMQ, ensuring a decoupled 
 
 - Node.js and npm
 - WSL (recommended)
-- Rancher Desktop (Kubernetes cluster for local development)
+- Docker Desktop (Kubernetes cluster for local development)
 - Helm (for Nginx installation)
 - Skaffold (Automatically builds docker images and deploys to k8s cluster)
 - Terraform (to create an s3 bucket to store images)
