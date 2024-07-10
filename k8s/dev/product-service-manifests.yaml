@@ -14,7 +14,7 @@ spec:
    spec:
      containers:
      - name: product-service
-       image: nineteen17dh/product-service
+       image: nineteen17dh/product-service:latest
        resources:
           limits:
             memory: 128Mi

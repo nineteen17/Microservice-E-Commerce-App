@@ -44,3 +44,7 @@ kubectl apply -f argocd-server-loadbalancer.yaml
 argocd app get microservice-e-commerce-app
 <!-- Sync the application -->
 argocd app sync microservice-e-commerce-app
+
+
+<!-- Destroy EKS Cluster and VPC -->
+terraform plan -destroy -target=module.eks -target=module.vpc -out=tfplan

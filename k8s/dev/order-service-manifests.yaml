@@ -14,7 +14,7 @@ spec:
    spec:
      containers:
      - name: order-service
-       image: nineteen17dh/order-service
+       image: nineteen17dh/order-service:latest
        resources:
           limits:
             memory: 128Mi

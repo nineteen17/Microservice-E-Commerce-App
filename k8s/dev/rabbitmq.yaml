@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: rabbitmq
+  namespace: default
 spec:
   serviceName: "rabbitmq"
   replicas: 3
@@ -15,7 +16,7 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: image
+        image: <your-rabbitmq-image>
         ports:
         - containerPort: 5672
           name: amqp
@@ -31,13 +32,15 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 10Gi  
+          storage: 10Gi
+      storageClassName: gp2
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq
+  namespace: default
 spec:
   selector:
     app: rabbitmq
@@ -51,4 +54,3 @@ spec:
     targetPort: 15672
     name: management
   clusterIP: None
-
