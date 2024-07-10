@@ -41,6 +41,6 @@ kubectl apply -f argocd-application.yaml
 kubectl apply -f argocd-server-loadbalancer.yaml
 
 <!-- Verify that the Argo CD application has been created and is syncing correctly. -->
-argocd app get argocd app sync microservice-e-commerce-app
+argocd app get microservice-e-commerce-app
 <!-- Sync the application -->
 argocd app sync microservice-e-commerce-app
