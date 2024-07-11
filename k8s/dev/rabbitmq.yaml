@@ -2,10 +2,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: rabbitmq
-  namespace: default
 spec:
   serviceName: "rabbitmq"
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rabbitmq
@@ -32,15 +31,13 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 1Gi
-      storageClassName: gp2
+          storage: 10Gi  
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq
-  namespace: default
 spec:
   selector:
     app: rabbitmq
