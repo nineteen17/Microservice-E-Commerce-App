@@ -58,6 +58,10 @@ kubectl create secret docker-registry docker-registry-secret \
   --docker-email=<your-docker-hub-email> \
   --namespace=beerstore-dev
 
+kubectl patch serviceaccount default \
+  -p '{"imagePullSecrets": [{"name": "docker-registry-secret"}]}'
+<!-- Build and push the docker images to the registry -->
+skaffold run
 <!-- Destroy EKS Cluster and VPC -->
 manually delete the load balancer in the aws cli or console
 terraform plan -destroy -target=module.eks -target=module.vpc -out=tfplan

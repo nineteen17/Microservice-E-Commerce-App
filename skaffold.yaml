@@ -4,7 +4,8 @@ metadata:
   name: microservice-e-commerce-app
 build:
   tagPolicy:
-    gitCommit: {}
+    envTemplate:
+      template: "{{.IMAGE_NAME}}:latest"
   artifacts:
     - image: nineteen17dh/product-service
       context: app/product-service
