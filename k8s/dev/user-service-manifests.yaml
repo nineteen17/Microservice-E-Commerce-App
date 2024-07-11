@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
  name: user-service
+ namespace: default
 spec:
  replicas: 1
  selector:
@@ -14,11 +15,11 @@ spec:
    spec:
      containers:
      - name: user-service
-       image: nineteen17dh/user-service:latest
+       image: nineteen17dh/user-service
        resources:
           limits:
-            memory: 128Mi
-            cpu: 500m
+            memory: 64Mi
+            cpu: 100m
        ports:
        - containerPort: 4000
 ---
