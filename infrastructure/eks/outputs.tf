@@ -47,3 +47,11 @@ output "route53_record_fqdn" {
   description = "Route53 Record FQDN"
   value       = aws_route53_record.eks.fqdn
 }
+
+output "secrets_arns" {
+  value = { for k, v in aws_secretsmanager_secret.secrets : k => v.arn }
+}
+
+output "external_secrets_role_arn" {
+  value = aws_iam_role.external_secrets_role.arn
+}

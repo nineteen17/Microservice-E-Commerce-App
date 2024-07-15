@@ -10,9 +10,6 @@
 aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 kubectl config current-context
 
-
-
-
 <!-- Installing Nginx Ingress Controller using helm -->
 helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
@@ -24,14 +21,13 @@ curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/lat
 sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
 rm argocd-linux-amd64
 
+<!-- Configure Argocd amd add tp the cluster -->
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 <!-- Deploy the apllication to argocd -->
 - cd into the argocd folder location
 kubectl apply -f argocd-application.yaml
 kubectl apply -f argocd-server-loadbalancer.yaml
-
-<!-- Configure Argocd amd add tp the cluster -->
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 <!-- Expose Argo CD API Server: -->
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 <!-- Log in to Argo CD: -->
@@ -61,9 +57,17 @@ kubectl create secret docker-registry docker-registry-secret \
 kubectl patch serviceaccount default \
   -p '{"imagePullSecrets": [{"name": "docker-registry-secret"}]}'
 
+<!-- create external secrets. NOTE use external_secrets_role_arn from outputs.tf -->
+helm repo add external-secrets https://charts.external-secrets.io
+helm repo update
+
+helm install external-secrets external-secrets/external-secrets \
+  --set serviceAccount.create=true \
+  --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=<arn:aws:iam::123456789012:role/external-secrets-role>
+
 <!-- Build and push the docker images to the registry -->
 skaffold run
 <!-- Destroy EKS Cluster and VPC -->
 manually delete the load balancer in the aws cli or console
 terraform plan -destroy -target=module.eks -target=module.vpc -out=tfplan
-
+terraform apply "tfplan" b 
